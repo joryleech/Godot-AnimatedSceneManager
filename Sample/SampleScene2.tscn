@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://b64ayt1p2o31b"]
+
+[ext_resource type="PackedScene" uid="uid://cjrurmrvvbsx4" path="res://Sample/SampleMenu/SampleMenu.tscn" id="1_8tely"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7d7ug"]
+font_size = 100
+
+[node name="SampleScene1" type="Node2D"]
+
+[node name="SampleMenu" parent="." instance=ExtResource("1_8tely")]
+anchors_preset = 15
+offset_right = 500.0
+offset_bottom = 647.0
+
+[node name="Label" type="Label" parent="."]
+offset_left = 666.0
+offset_top = 133.0
+offset_right = 1062.0
+offset_bottom = 387.0
+text = "Scene 2"
+label_settings = SubResource("LabelSettings_7d7ug")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+z_index = -1
+position = Vector2(-1250, -294)
+scale = Vector2(1.30462, 1.56773)
+color = Color(0.858824, 0.360784, 0.878431, 1)
+polygon = PackedVector2Array(1904, 644, 1907, 151, 927.401, 149.086, 932, 653)

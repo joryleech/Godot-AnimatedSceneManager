@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjrurmrvvbsx4"]
+
+[ext_resource type="Theme" uid="uid://dhm8u8i2f78q5" path="res://Sample/SampleMenu/ButtonTheme.tres" id="1_t4ax6"]
+[ext_resource type="Script" path="res://Sample/SampleMenu/SampleMenu.gd" id="1_wrlms"]
+
+[node name="SampleMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wrlms")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="GridContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_t4ax6")
+text = "Go To Scene 1
+"
+
+[node name="Button2" type="Button" parent="Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_t4ax6")
+text = "Go To Scene 2
+"
+
+[node name="Button3" type="Button" parent="Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_t4ax6")
+text = "Go To Scene 1 Async
+"
+
+[node name="Button4" type="Button" parent="Panel/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_t4ax6")
+text = "Go To Scene 2 Async
+"
+
+[connection signal="button_down" from="Panel/GridContainer/Button" to="." method="go_to_scene" binds= ["res://Sample/SampleScene1.tscn"]]
+[connection signal="button_down" from="Panel/GridContainer/Button2" to="." method="go_to_scene" binds= ["res://Sample/SampleScene2.tscn"]]
+[connection signal="button_down" from="Panel/GridContainer/Button3" to="." method="go_to_scene_async" binds= ["res://Sample/SampleScene1.tscn"]]
+[connection signal="button_down" from="Panel/GridContainer/Button4" to="." method="go_to_scene_async" binds= ["res://Sample/SampleScene2.tscn"]]

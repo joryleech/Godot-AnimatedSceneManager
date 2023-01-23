@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6n30lyrua8h0"]
+
+[ext_resource type="Script" path="res://addons/animated_scene_manager/transitions/Transition.gd" id="1_sr1hl"]
+
+[node name="FadeTransition" type="CanvasLayer"]
+script = ExtResource("1_sr1hl")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
