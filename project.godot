@@ -8,6 +8,16 @@
 
 config_version=5
 
+_global_script_classes=[{
+"base": "CanvasLayer",
+"class": &"Transition",
+"language": &"GDScript",
+"path": "res://addons/animated_scene_manager/transitions/Transition.gd"
+}]
+_global_script_class_icons={
+"Transition": ""
+}
+
 [application]
 
 config/name="Animated Scene Manager"

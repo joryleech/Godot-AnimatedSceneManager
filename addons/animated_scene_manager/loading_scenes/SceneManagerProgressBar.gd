@@ -6,5 +6,4 @@ func _ready():
 	SceneManager.async_scene_load_progress.connect(_on_update_progress)
 
 func _on_update_progress(progress : float):
-	print(progress)
 	set_value(progress*100)

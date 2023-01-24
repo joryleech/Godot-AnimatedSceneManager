@@ -17,23 +17,26 @@ enum TRANSITION_TYPE {
 
 var DEFAULT_SCENE_CHANGE_OPTIONS={
 	"speed": 1,
-	"invert_on_load": true,
+	"reverse_animation_on_load": false,
 	"loading_scene": "res://addons/animated_scene_manager/loading_scenes/SampleLoadingScene.tscn",
 	"failed_scene_load_behavior": FAILED_SCENE_LOAD_BEHAVIOR.log,
 	"async_use_sub_threads": true,
 	"async_automatically_finish_loading": true,
 	"async_file_polling_rate": 0.01,
 	"minimum_loading_screen_time": 0.5,
-	"unload_transition": "res://addons/animated_scene_manager/transitions/FadeTransition.tscn",
-	"load_transition": "res://addons/animated_scene_manager/transitions/FadeTransition.tscn",
-	
+	"unload_transition": preload("res://addons/animated_scene_manager/transitions/Fade/FadeOut.tscn"),
+	"load_transition": preload("res://addons/animated_scene_manager/transitions/Fade/FadeIn.tscn"),
+	"async_loading_unload_transition": preload("res://addons/animated_scene_manager/transitions/Fade/FadeOut.tscn"),
+	"async_loading_load_transition": preload("res://addons/animated_scene_manager/transitions/Fade/FadeIn.tscn"),
 }
 
 func change_scene(scene_name, opts = {}):
 	#Unload animation
-	
+	await play_transition(TRANSITION_TYPE.unload, opts, false)
 	#Load Scene
 	get_tree().change_scene_to_file(scene_name)
+	play_transition(TRANSITION_TYPE.load, opts, false)
+	
 	emit_signal("scene_unloaded")
 	emit_signal('scene_loaded')
 	#Load animation
@@ -44,6 +47,7 @@ func change_scene_async(scene_name, opts = {}):
 	#Unload main scene, load loading screen
 	var loading_scene_url = _get_option_value(opts, "loading_scene")
 	get_tree().change_scene_to_file(loading_scene_url)
+	await play_transition(TRANSITION_TYPE.load, opts, true)
 	emit_signal("scene_unloaded")
 	
 	var async_use_sub_threads = _get_option_value(opts, "async_use_sub_threads")
@@ -58,9 +62,31 @@ func change_scene_async(scene_name, opts = {}):
 	emit_signal('scene_loaded')
 	
 func play_transition(transition_type : TRANSITION_TYPE, opts={}, is_loading_screen=false):
+	var transition_animation : Resource = get_transition(transition_type, opts, is_loading_screen)
+	if(transition_animation):
+		var reverse_animation = _get_option_value(opts, 'reverse_animation_on_load') && transition_type == TRANSITION_TYPE.load
+		var transition_node = transition_animation.instantiate()
+		add_child(transition_node)
+		#Play Transition return function
+		await transition_node.play({
+			"reverse": reverse_animation,
+			"speed":  _get_option_value(opts, 'speed')
+		})
+		transition_node.queue_free()
+		return
 	return
 	
+func get_transition(transition_type : TRANSITION_TYPE, opts={}, is_loading_screen=false):
+	var key_prefix = "async_loading_" if is_loading_screen else ""
+	match(transition_type):
+		TRANSITION_TYPE.load:
+			return _get_option_value(opts, key_prefix+"load_transition")
+		TRANSITION_TYPE.unload:
+			return _get_option_value(opts, key_prefix+"unload_transition")
+	
 func finish_loading_scene(scene_name, opts={}):
+	await play_transition(TRANSITION_TYPE.unload, opts, true)
+	play_transition(TRANSITION_TYPE.load, opts, false)
 	get_tree().change_scene_to_packed(ResourceLoader.load_threaded_get(scene_name))
 	
 func _check_asymc_resource_loading_state(resource_name : String, opts={}):
@@ -106,7 +132,7 @@ func set_default_options(new_options : Dictionary):
 		set_default_option(key, new_options[key])
 
 ## Sets the value of a single default option.
-##Requires both the key and value to be non null
+## Requires both the key and value to be non null
 func set_default_option(key : String, value):
 	assert(key != null)
 	assert(value != null)
